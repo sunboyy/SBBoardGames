@@ -13,6 +13,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({ secret: "helloandwelcometosunboysboardgames", resave: false, saveUninitialized: true }));
 app.use(flash());
+require('./config/passport')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 app.set('view engine', 'ejs');
 
 require('./router')(app, passport);
