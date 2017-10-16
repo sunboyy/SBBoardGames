@@ -1,0 +1,35 @@
+{
+  "name": "sbboardgames",
+  "version": "1.0.0",
+  "description": "Board Games",
+  "main": "app.ja",
+  "scripts": {
+    "test": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunboyy/sb_board_games.git"
+  },
+  "keywords": [
+    "Game",
+    "Games",
+    "Board",
+    "Board",
+    "Games"
+  ],
+  "author": "Surawich Laprattanatrai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sunboyy/sb_board_games/issues"
+  },
+  "homepage": "https://github.com/sunboyy/sb_board_games#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "passport": "^0.4.0"
+  }
+}
