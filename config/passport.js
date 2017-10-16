@@ -39,31 +39,4 @@ module.exports = function (passport) {
             });
         });
     }));
-
-    passport.use('local-signup', new LocalStrategy({
-        usernameField: "username",
-        passwordField: "password",
-        passReqToCallback: true
-    }, function (req, username, password, done) {
-        process.nextTick(function () {
-            if (!req.user) {
-                pool.getConnection(function (err, conn) {
-                    if (err) throw err;
-                    conn.query("SELECT * FROM `user` WHERE `username` = '" + username + "'", function (err, rows) {
-                        if (rows.length == 0) {
-                            conn.query("INSERT INTO `user` VALUES (NULL, '" + username + "', '" + bcrypt.hashSync(password, bcrypt.genSaltSync(8)) + "')", function(err, rows) {
-                                if (err) throw err;
-                                conn.query("SELECT * FROM `user` WHERE `username` = '" + username + "'", function(err, rows) {
-                                    done(null, rows[0]);
-                                });
-                            });
-                        }
-                        else {
-                            done(null, false, req.flash('signupMessage', 'Username already exists'));
-                        }
-                    });
-                });
-            }
-        });
-    }));
 }
