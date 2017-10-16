@@ -18,6 +18,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.set('view engine', 'ejs');
 
+// Dev
+app.use(require('nodeadmin')(app));
+
 require('./router')(app, passport);
 
 app.listen(config.common.runPort, function () {

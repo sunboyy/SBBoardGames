@@ -1,22 +1,19 @@
 var LocalStrategy = require('passport-local').Strategy;
+var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
-var users = [
-    {
-        id: 1,
-        username: "sunboy",
-        password: "$2a$08$dHlJ2GJ9sQjnoHqwCJxWqerrFaGhCR/u4MbuKeAdAnurygRrNlsly"
-    }
-]
+var pool = mysql.createPool(require('./database'));
+
 module.exports = function(passport) {
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
     passport.deserializeUser(function(id, done) {
-        users.forEach(function(user) {
-            if (user.id == id) {
-                done(null, user);
-                return;
-            }
+        pool.getConnection(function(err, conn) {
+            conn.query("SELECT * FROM `user` WHERE `id` = " + id, function(err, rows) {
+                if (err) throw err;
+                if (rows.length == 0) done("User not found", false);
+                else done(null, rows[0]);
+            });
         });
     });
 
@@ -26,19 +23,21 @@ module.exports = function(passport) {
         passReqToCallback: true
     }, function(req, username, password, done) {
         let found = false;
-        users.forEach(function(user) {
-            if (user.username == username) {
-                if (bcrypt.compareSync(password, user.password)) {
-                    done(null, user);
+        pool.getConnection(function(err, conn) {
+            conn.query("SELECT * FROM `user` WHERE `username` = '" + username + "'", function(err, rows) {
+                if (err) throw err;
+                if (rows.length == 0) {
+                    done(null, false, req.flash('loginMessage', 'User not found'));
                 }
                 else {
-                    done(null, false, req.flash('loginMessage', 'Incorrect Password'));
+                    if (bcrypt.compareSync(password, rows[0].password)) {
+                        done(null, rows[0]);
+                    }
+                    else {
+                        done(null, false, req.flash('loginMessage', 'Incorrect password'));
+                    }
                 }
-                found = true;
-            }
+            });
         });
-        if (!found) {
-            done(null, false, req.flash('loginMessage', 'User not found'));
-        }
     }));
 }
