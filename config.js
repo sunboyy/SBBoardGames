@@ -1,3 +1,8 @@
+var common = require('./config/common');
+var view = require('./config/view');
+var database = require('./config/database');
 module.exports = {
-    runPort: 3000
-}
+    common: common,
+    view: view,
+    database: database
+};

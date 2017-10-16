@@ -9,12 +9,14 @@ var config = require('./config');
 
 var app = express();
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(session({secret: "helloandwelcometosunboysboardgames", resave: false, saveUninitialized: true}));
+app.use(session({ secret: "helloandwelcometosunboysboardgames", resave: false, saveUninitialized: true }));
 app.use(flash());
 app.set('view engine', 'ejs');
 
-app.listen(config.runPort, function() {
-    console.log("Running Board Games at port " + config.runPort);
+require('./router')(app, passport);
+
+app.listen(config.common.runPort, function () {
+    console.log("Running Board Games at port " + config.common.runPort);
 });
