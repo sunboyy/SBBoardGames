@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Login - <%= config.title %></title>
+    <title>Sign Up - <%= config.title %></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
         crossorigin="anonymous">
     <link rel="stylesheet" href="/css/font-awesome.min.css">
@@ -17,11 +17,11 @@
 
 <body>
     <div class="container" style="margin-top:20px;">
-        <h1><span class="fa fa-sign-in"></span> Login</h1>
+        <h1><span class="fa fa-sign-in"></span> Sign Up</h1>
         <% if (message.length > 0) { %>
             <div class="alert alert-danger"><%= message %></div>
         <% } %>
-        <form action="/login" method="POST">
+        <form action="/signup" method="POST">
             <div class="form-group">
                 <label for="usernameField">Username:</label>
                 <input type="text" name="username" class="form-control" id="usernameField" placeholder="Username">
@@ -30,10 +30,14 @@
                 <label for="passwordField">Password:</label>
                 <input type="password" name="password" class="form-control" id="passwordField" placeholder="Password">
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <div class="form-group">
+                <label for="confirmField">Confirm Password:</label>
+                <input type="password" name="confirm" class="form-control" id="passwordField" placeholder="Confirm Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
         </form>
         <hr>
-        <p>Need an account? <a href="/signup">Sign Up</a></p>
+        <p>Already have an account? <a href="/login">Login</a></p>
     </div>
 </body>
 
