@@ -1,7 +1,8 @@
-var mysql = require('mysql');
-var bcrypt = require('bcrypt-nodejs');
+// var mysql = require('mysql');
+// var bcrypt = require('bcrypt-nodejs');
 var configView = require('./config/view');
-var pool = mysql.createPool(require('./config/database'));
+// var pool = mysql.createPool(require('./config/database'));
+var User = require('./models/user');
 module.exports = function (app, passport) {
     app.get('/', function (req, res) {
         res.render('index', { config: configView });
@@ -10,19 +11,19 @@ module.exports = function (app, passport) {
         res.render('signup', { config: configView, message: req.flash('signupMessage') });
     });
     app.post('/signup', function (req, res) {
-        pool.getConnection(function (err, conn) {
+        User.findOne({ username: req.body.username }, function (err, user) {
             if (err) throw err;
-            conn.query("SELECT * FROM `user` WHERE `username` = '" + req.body.username + "'", function (err, rows) {
-                if (rows.length == 0) {
-                    conn.query("INSERT INTO `user` VALUES (NULL, '" + req.body.username + "', '" + bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8)) + "')", function (err, rows) {
-                        if (err) throw err;
-                        res.redirect('/login');
-                    });
-                }
-                else {
-                    res.render('/signup', {config: configView, message: 'Username already exists'});
-                }
-            });
+            if (user) {
+                res.render('signup', { config: configView, message: "Username already exists" });
+            }
+            else {
+                let newUser = new User();
+                newUser.username = req.body.username;
+                newUser.password = newUser.generateHash(req.body.password);
+                newUser.save(function() {
+                    res.redirect('/login');
+                });
+            }
         });
     });
     app.get('/login', function (req, res) {

@@ -4,8 +4,10 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var flash = require('connect-flash');
 var passport = require('passport');
+var mongoose = require('mongoose');
 
 var config = require('./config');
+mongoose.connect(config.database.url, {useMongoClient: true});
 
 var app = express();
 app.use(express.static('public'));
@@ -17,9 +19,6 @@ require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 app.set('view engine', 'ejs');
-
-// Dev
-app.use(require('nodeadmin')(app));
 
 require('./router')(app, passport);
 
