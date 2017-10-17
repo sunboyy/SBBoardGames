@@ -4,8 +4,8 @@ module.exports = function (app) {
         res.render('avalon/index', { config: configView });
     });
     app.get('/avalon/game', isLoggedIn, function (req, res) {
-        res.render('avalon/game', { config: configView })
-    })
+        res.render('avalon/game', { config: configView, user: req.user });
+    });
 }
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {

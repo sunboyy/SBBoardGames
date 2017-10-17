@@ -14,6 +14,7 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
         crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 </head>
 
 <body>
@@ -21,7 +22,30 @@
         <a href="/avalon">Exit Game</a>
         <h1>Avalon Room</h1>
         <p id="socketLbl">sss</p>
+        <button id="startBtn" class="btn btn-success">Start Game</button>
+        <button id="endBtn" class="btn btn-danger" style="display:none;">End Game</button>
     </div>
+    <script>
+        var socket = io();
+        socket.emit('avalon-connect', '<%= user._id %>');
+        $('#startBtn').click(function() {
+            socket.emit('avalon-status', true);
+        });
+        $('#endBtn').click(function() {
+            socket.emit('avalon-status', false);
+        });
+        socket.on('avalon-status', function(status) {
+            console.log(status);
+            if (status.start) {
+                $('#startBtn').hide();
+                $('#endBtn').show();
+            }
+            else {
+                $('#startBtn').show();
+                $('#endBtn').hide();
+            }
+        });
+    </script>
 </body>
 
 </html>

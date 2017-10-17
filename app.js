@@ -22,6 +22,8 @@ app.set('view engine', 'ejs');
 
 require('./router')(app, passport);
 
-app.listen(config.common.runPort, function () {
+var server = app.listen(config.common.runPort, function () {
     console.log("Running Board Games at port " + config.common.runPort);
 });
+
+require('./socket')(server);
