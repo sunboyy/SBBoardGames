@@ -17,13 +17,19 @@
 </head>
 
 <body>
-    <p>
-        <%= user._id %>
-    </p>
-    <p>
-        <%= user.username %>
-    </p>
-    <p><a href="/logout">Logout</a></p>
+    <div class="container">
+        <h2>Profile</h2>
+        <p>
+            <a href="/">Home</a> |
+            <a href="/logout">Logout</a>
+        </p>
+        <p>
+            <%= user._id %>
+        </p>
+        <p>
+            Logging in as <strong><%= user.username %></strong>
+        </p>
+    </div>
 </body>
 
 </html>

@@ -5,7 +5,7 @@ var configView = require('./config/view');
 var User = require('./models/user');
 module.exports = function (app, passport) {
     app.get('/', function (req, res) {
-        res.render('index', { config: configView });
+        res.render('index', { config: configView, user: req.user });
     });
     app.get('/signup', function (req, res) {
         res.render('signup', { config: configView, message: req.flash('signupMessage') });
@@ -20,7 +20,7 @@ module.exports = function (app, passport) {
                 let newUser = new User();
                 newUser.username = req.body.username;
                 newUser.password = newUser.generateHash(req.body.password);
-                newUser.save(function() {
+                newUser.save(function () {
                     res.redirect('/login');
                 });
             }

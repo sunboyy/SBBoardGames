@@ -20,7 +20,12 @@
     <div class="container">
         <h1>Board Games</h1>
         <p>
+            <% if (!user) { %>
             <a href="/login">Login</a>
+            <% } else { %>
+            <a href="/profile">Profile</a> |
+            <a href="/logout">Logout</a>
+            <% } %>
         </p>
         <div class="row">
             <div class="col-sm-4">
