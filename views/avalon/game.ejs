@@ -15,37 +15,55 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
 </head>
 
-<body>
+<body id="avalonGame" ng-app="sbbg" ng-controller="avalon">
     <div class="container">
         <a href="/avalon">Exit Game</a>
         <h1>Avalon Room</h1>
-        <p id="socketLbl">sss</p>
-        <button id="startBtn" class="btn btn-success">Start Game</button>
-        <button id="endBtn" class="btn btn-danger" style="display:none;">End Game</button>
+        <div class="alert alert-danger" ng-if="error != null">{{error}}</div>
+        <table class="table table-striped" ng-hide="start">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="i in players">
+                    <td>{{i.name}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="startBtn" class="btn btn-success" ng-hide="start">Start Game</button>
+        <button id="endBtn" class="btn btn-danger" ng-show="start">End Game</button>
     </div>
     <script>
         var socket = io();
-        socket.emit('avalon-connect', '<%= user._id %>');
-        $('#startBtn').click(function() {
+        $('#startBtn').click(function () {
             socket.emit('avalon-status', true);
         });
-        $('#endBtn').click(function() {
+        $('#endBtn').click(function () {
             socket.emit('avalon-status', false);
         });
-        socket.on('avalon-status', function(status) {
-            console.log(status);
-            if (status.start) {
-                $('#startBtn').hide();
-                $('#endBtn').show();
-            }
-            else {
-                $('#startBtn').show();
-                $('#endBtn').hide();
-            }
+        var app = angular.module('sbbg', []);
+        app.controller('avalon', function ($scope) {
+            $scope.start = false;
+            $scope.players = [];
+            $scope.error = null;
+
+            socket.emit('avalon-connect', '<%= user._id %>');
+            socket.on('avalon-status', function (status) {
+                console.log(status);
+                $scope.start = status.start;
+                $scope.players = status.players;
+                $scope.error = status.error;
+                $scope.$apply();
+            });
         });
+
     </script>
+    <script src="/js/avalon.js"></script>
 </body>
 
 </html>

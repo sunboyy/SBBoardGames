@@ -1,10 +1,11 @@
 var User = require('../models/user');
 var Avalon = require('../games/avalon/core');
 var game = new Avalon.Game();
-function getStatus(start) {
+function getStatus(error) {
     let status = {
         start: game.isStarted,
-        players: []
+        players: [],
+        error: error
     };
     game.players.forEach(function(player) {
         status.players.push({
@@ -25,13 +26,16 @@ module.exports = function (io, socket) {
         });
     });
     socket.on('avalon-status', function (start) {
+        var error = null;
         if (start) {
-            game.start();
+            if (!game.start()) {
+                error = "This number of players is not supported."
+            }
         }
         else {
             game.end();
         }
-        io.emit('avalon-status', getStatus());
+        io.emit('avalon-status', getStatus(error));
     });
     socket.on('disconnect', function () {
         if (socket.game == "avalon") {
