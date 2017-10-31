@@ -62,7 +62,7 @@ var Game = /** @class */ (function () {
         this.quests = [];
     }
     Game.prototype.start = function () {
-        if (this.players.length > 5 || this.players.length < 5) {
+        if (this.players.length != 2 && this.players.length != 5) {
             console.log("AvalonGameError: This number of players is not supported.");
             return false;
         }
@@ -89,7 +89,7 @@ var Game = /** @class */ (function () {
         this.quests = [];
     };
     Game.ROLES = [[],
-        [], [], [], [],
+        [], [Player.GENERIC_GOOD, Player.GENERIC_EVIL], [], [],
         [Player.GENERIC_GOOD, Player.GENERIC_GOOD, Player.MERLIN, Player.GENERIC_EVIL, Player.ASSASSIN],
     ];
     return Game;

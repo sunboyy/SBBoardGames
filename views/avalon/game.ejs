@@ -22,8 +22,17 @@
     <div class="container">
         <a href="/avalon">Exit Game</a>
         <h1>Avalon Room</h1>
+        <div class="alert alert-primary">Logged in as
+            <strong>{{me().name}}</strong>
+        </div>
         <div class="alert alert-danger" ng-if="error != null">{{error}}</div>
-        <table class="table table-striped" ng-hide="start">
+        <div class="alert alert-info" ng-if="start">
+            <strong>Role:</strong> {{roleName(me().role)}}
+            <br>
+            <strong>Side:</strong> {{side(me().role)}}
+        </div>
+        <p>{{players.length}} players are in the game</p>
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -39,6 +48,7 @@
         <button id="endBtn" class="btn btn-danger" ng-show="start">End Game</button>
     </div>
     <script>
+        var userid = '<%= user._id %>';
         var socket = io();
         $('#startBtn').click(function () {
             socket.emit('avalon-status', true);
@@ -48,11 +58,45 @@
         });
         var app = angular.module('sbbg', []);
         app.controller('avalon', function ($scope) {
+            $scope.roleName = function (roleID) {
+                switch (roleID) {
+                    case -5:
+                        return "Oberon";
+                    case -4:
+                        return "Morgana";
+                    case -3:
+                        return "Mordred";
+                    case -2:
+                        return "Assassin";
+                    case -1:
+                        return "Generic Evil";
+                    case 1:
+                        return "Generic Good";
+                    case 2:
+                        return "Merlin";
+                    case 3:
+                        return "Percival";
+                }
+            }
+            $scope.side = function (roleID) {
+                if (roleID > 0) return "Good";
+                if (roleID < 0) return "Evil";
+            }
             $scope.start = false;
             $scope.players = [];
             $scope.error = null;
+            $scope.me = function () {
+                let player = $scope.players.filter(i => {
+                    return i.id == userid;
+                });
+                if (player.length > 0) {
+                    console.log(player[0]);
+                    return player[0];
+                }
+                return null;
+            }
 
-            socket.emit('avalon-connect', '<%= user._id %>');
+            socket.emit('avalon-connect', userid);
             socket.on('avalon-status', function (status) {
                 console.log(status);
                 $scope.start = status.start;
